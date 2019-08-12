@@ -2,6 +2,11 @@ import sixtracktools
 from cpymad.madx import Madx
 import pysixtrack
 import pickle
+import sys
+sys.path.append('..')
+
+import normalization
+
 import os
 
 os.system('(cd sixtrack; ./runsix)')
@@ -65,6 +70,17 @@ line.beambeam_store_closed_orbit_and_dipolar_kicks(
 with open('line_from_six_with_bbCO.pkl', 'wb') as fid:
     pickle.dump(line.to_dict(keepextra=True), fid)
 
+##########################################
+# Compute linear map around closed orbit #
+##########################################
+
+part = pysixtrack.Particles(p0c = p0c_eV)
+pysixtrack_CO_bb, M = normalization.get_CO_and_linear_map(part, line, 1e-10, 1.e-10)
+
+Ms = normalization.healy_symplectify(M)
+
+W, invW, R = normalization.linear_normal_form(Ms)
+
 #########################################
 # Save particle on closed orbit as dict #
 #########################################
@@ -97,6 +113,10 @@ optics_dict = {'betx'      : twiss_table.betx[0],
                'bety'      : twiss_table.bety[0],
                'alfx'      : twiss_table.alfx[0],
                'alfy'      : twiss_table.alfy[0],
+               'disp_x'    : twiss_table.dx[0]/mad.sequence[seq].beam.beta,
+               'disp_px'   : twiss_table.dpx[0]/mad.sequence[seq].beam.beta,
+               'disp_y'    : twiss_table.dy[0]/mad.sequence[seq].beam.beta,
+               'disp_py'   : twiss_table.dpy[0]/mad.sequence[seq].beam.beta,
                'qx'        : mad.table['summ']['q1'][0],
                'qy'        : mad.table['summ']['q2'][0],
                'dqx'       : mad.table['summ']['dq1'][0],
@@ -109,7 +129,12 @@ optics_dict = {'betx'      : twiss_table.betx[0],
                'alfa'      : twiss_table.alfa[0],
                'beta0'     : mad.sequence[seq].beam.beta,
                'gamma0'    : mad.sequence[seq].beam.gamma,
-               'p0c_eV'    : mad.sequence[seq].beam.pc*1.e9
+               'p0c_eV'    : mad.sequence[seq].beam.pc*1.e9,
+               'M'         : M,
+               'Ms'        : Ms,
+               'W'         : W,
+               'invW'      : invW,
+               'R'         : R
               }
 
 with open('optics_mad.pkl', 'wb') as fid:

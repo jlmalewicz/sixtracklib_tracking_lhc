@@ -33,7 +33,6 @@ mad.twiss()
 mad.survey()
 IP_xyz_b1 = {}
 for ip in ip_names:
-
     IP_xyz_b1[ip] = MadPoint.from_survey('ip%d' % ip+':1', mad)
 
 mad.use('lhcb2')
@@ -41,7 +40,6 @@ mad.twiss()
 mad.survey()
 IP_xyz_b2 = {}
 for ip in ip_names:
-
     IP_xyz_b2[ip] = MadPoint.from_survey('ip%d' % ip+':1', mad)
 
 # Get locations of the bb encounters (absolute from survey), closed orbit
@@ -80,7 +78,6 @@ mad_ft.options.warn = False
 mad_ft.options.info = False
 mad_ft.call('lhcwbb_fortracking.seq')
 mad_ft.use('lhcb1')  # without this the sequence does not work properly
-
 
 # Build pysixtrack line
 line_for_tracking, _ = pysixtrack.Line.from_madx_sequence(
