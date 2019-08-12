@@ -60,7 +60,7 @@ X0 = np.array([cnaf0_input['init_x'], cnaf0_input['init_px'],
                np.zeros([10000,]),    np.zeros([10000,])   ])
 
 
-X = np.array([cnaf0_output['x_tbt_first'],    cnaf0_output['x_tbt_first'],
+X = np.array([cnaf0_output['x_tbt_first'],    cnaf0_output['px_tbt_first'],
               cnaf0_output['y_tbt_first'],    cnaf0_output['py_tbt_first'],
               cnaf0_output['zeta_tbt_first'], cnaf0_output['delta_tbt_first']]).T
 
@@ -68,12 +68,13 @@ X = np.array([cnaf0_output['x_tbt_first'],    cnaf0_output['x_tbt_first'],
 # I'll just look at a couple of individual X vectors instead of the whole thing
 
 X10   = X[9,   ::10, :] #particle nr. 10, every 10 turns
-X100  = X[99,  ::10, :] #particle nr. 10, every 10 turns
-X1000 = X[999, ::10, :] #particle nr. 10, every 10 turns
+X100  = X[99,  ::10, :] #particle nr. 100, every 10 turns
+X1000 = X[999, ::10, :] #particle nr. 1000, every 10 turns
 
 #normalize
 
 bb_R = bb_toolbox['R']
+
 def bb_normalize(X, n_turns, n_part, bb_R):
     print('Getting W...')
     W = bb_toolbox['W']
@@ -82,9 +83,13 @@ def bb_normalize(X, n_turns, n_part, bb_R):
     for n in range(n_turns):
         for i in range(n_part):
             X_norm[i, n, :] = np.matmul(np.linalg.inv(W), X[i, n, :])
-        print('%s out of %s turns' %(n, n_turns))
+        if n % 100 == 0:
+            print('%s out of %s turns' %(n, n_turns))
     return X_norm
 
+X10_norm   = X_norm[9,   ::10, :] #particle nr. 10, every 10 turns 
+X100_norm  = X_norm[99,  ::10, :] #particle nr. 100, every 10 turns
+X1000_norm = X_norm[999, ::10, :] #particle nr. 1000, every 10 turns
 
 # plot
 
@@ -93,7 +98,7 @@ def plot():
     plt.plot(X100[:,0],  X100[:, 1],  'ro', label = 'part nr. 100' )
     plt.plot(X1000[:,0], X1000[:, 1], 'mo', label = 'part nr. 1000')
     plt.title('x vs. px')
-    plt.legend(loc = 'upper left')
+    plt.legend(loc = 'upper right')
     plt.show()
     return 
 
@@ -105,9 +110,12 @@ def bb_plot_norm():
     return
 
 def plot_norm():
-    plt.plot(X_norm[::100, ::10 ,0],   X_norm[::100, ::10 , 1],   'bo'  )
+    plt.plot(X10_norm[:,0],   X10_norm[:, 1],   'bo', label = 'part nr. 10'  )
+    plt.plot(X100_norm[:,0],  X100_norm[:, 1],  'ro', label = 'part nr. 100' )
+    plt.plot(X1000_norm[:,0], X1000_norm[:, 1], 'mo', label = 'part nr. 1000')
+
     plt.title('without bb norm x vs. px')
-    # plt.legend(loc = 'upper left')
+    plt.legend(loc = 'upper left')
     plt.show()
     return
 
