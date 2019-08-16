@@ -97,9 +97,9 @@ t0, J1_init, J1_avg, J2_init, J2_avg, epsg_x, epsg_y = initialization(myfile)
 ##################
 
 def integral(t, t0, J1, J2, epsg_x, epsg_y):
-    V     = 1    # volume of hypersphere     ~ 1/2 pi^2 R^4
-    M     = 1    # number of samples         ~ 50,000
-    N     = 1    # total number of particles ~ 10^11
+    V     = 16 * np.pi**2 * epsg_x * epsg_y   # volume of hypersphere    
+    M     = 1    # number of samples          ~ 50,000
+    N     = 1    # total number of particles  ~ 10^11
     T     = 1
 
     g_cst = N/(2 * np.pi)**2 / (epsg_x * epsg_y)
