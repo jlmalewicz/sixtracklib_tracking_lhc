@@ -7,9 +7,6 @@ import myfilemanager_sixtracklib as mfm
 import matplotlib.pyplot as plt
 import pickle
 
-myfile = 'test_delta0_10000parts.h5'
-
-
 ##################
 # misc functions #
 ##################
@@ -32,7 +29,6 @@ def J(a, b):
     J = 0.5 * ( np.multiply(a, a)
               + np.multiply(b, b ))
     return J
-
 
 ##################
 # initialization #
@@ -90,19 +86,18 @@ def initialization(myfile):
 
     return t0.flatten(), J1_init, J1_avg, J2_init, J2_avg, epsg_x, epsg_y
 
-t0, J1_init, J1_avg, J2_init, J2_avg, epsg_x, epsg_y = initialization(myfile)
-
 ##################
 #    integral    #
 ##################
 
 def integral(t, t0, J1, J2, epsg_x, epsg_y):
-    V     = 16 * np.pi**2 * epsg_x * epsg_y   # volume of hypersphere    
-    M     = 1    # number of samples          ~ 50,000
-    N     = 1    # total number of particles  ~ 10^11
+    R     = 4        # radius of hypersphere
+    V     = 1/2 * np.pi**2 * epsg_x * epsg_y * R**4  # volume of hypersphere    
+    M     = 100000    # number of samples          ~ 50,000
+    N     = 1        # total number of particles  ~ 10^11
     T     = 1
 
-    g_cst = N/(2 * np.pi)**2 / (epsg_x * epsg_y)
+    g_cst = N * (4 / np.pi)**2 / (epsg_x * epsg_y)
     g_fct = np.exp(-J1/(epsg_x)) * np.exp(-J2/(epsg_y))
 
     g     = g_cst * g_fct
