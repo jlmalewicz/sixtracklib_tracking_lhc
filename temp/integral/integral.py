@@ -92,12 +92,12 @@ def initialization(myfile):
 
 def integral(t, t0, J1, J2, epsg_x, epsg_y):
     R     = 4        # radius of hypersphere
-    V     = 1/2 * np.pi**2 * epsg_x * epsg_y * R**4  # volume of hypersphere    
-    M     = 100000    # number of samples          ~ 50,000
+    V     = 1/2 * np.pi**2 * epsg_x * epsg_y * R**4 /16  # volume of hypersphere    
+    M     = t0.shape[0]    # number of samples          ~ 50,000
     N     = 1        # total number of particles  ~ 10^11
     T     = 1
 
-    g_cst = N * (4 / np.pi)**2 / (epsg_x * epsg_y)
+    g_cst = N * 4 / np.pi**2 / (epsg_x * epsg_y)
     g_fct = np.exp(-J1/(epsg_x)) * np.exp(-J2/(epsg_y))
 
     g     = g_cst * g_fct
@@ -107,4 +107,23 @@ def integral(t, t0, J1, J2, epsg_x, epsg_y):
     Q = V/M * np.sum(np.multiply(K(t, t0), g))
     
     return Q
+
+# get Q^2
+def integral2(t, t0, J1, J2, epsg_x, epsg_y):
+    R     = 4        # radius of hypersphere
+    V     = 1/2 * np.pi**2 * R**4 /16  # volume of hypersphere
+    M     = t0.shape[0]    # number of samples          ~ 50,000
+    N     = 1        # total number of particles  ~ 10^11
+    T     = 1
+
+    g_cst = N * 4 / np.pi**2
+    g_fct = np.exp(-2 * J1/(epsg_x)) * np.exp(-2 * J2/(epsg_y))
+
+    g2     = g_cst**2 * g_fct
+
+    n     = t / T # convert time t to number of turns n
+
+    Q2 = V**2/M * np.sum(np.multiply(K(t, t0), g2))
+
+    return Q2
 
