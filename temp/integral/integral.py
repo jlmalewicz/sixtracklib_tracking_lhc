@@ -7,9 +7,51 @@ import myfilemanager_sixtracklib as mfm
 import matplotlib.pyplot as plt
 import pickle
 
+filelist = ['../data/losses_sixtracklib.3724052.0.h5',
+            '../data/losses_sixtracklib.3724052.1.h5',
+            '../data/losses_sixtracklib.3724052.2.h5',
+            '../data/losses_sixtracklib.3724052.3.h5',
+            '../data/losses_sixtracklib.3724052.4.h5',
+
+            '../data/losses_sixtracklib.3724053.0.h5',
+            '../data/losses_sixtracklib.3724053.1.h5',
+            '../data/losses_sixtracklib.3724053.2.h5',
+            '../data/losses_sixtracklib.3724053.3.h5',
+            '../data/losses_sixtracklib.3724053.4.h5']
+
+
 ##################
 # misc functions #
 ##################
+
+def merge(filelist):
+    t0_all   = np.array([])
+    J1_all   = np.array([])
+    J2_all   = np.array([])
+    phi1_all = np.array([])
+    phi2_all = np.array([])
+
+    for myfile in filelist:
+        print(' ')
+        print(myfile)
+        t0, J1_init, J2_init, phi1, phi2, epsg_x, epsg_y = initialization(myfile)
+        t0_all   = np.append(t0_all, t0)
+        J1_all   = np.append(J1_all, J1_init)
+        J2_all   = np.append(J2_all, J2_init)
+        phi1_all = np.append(phi1_all, phi1)
+        phi2_all = np.append(phi2_all, phi2)
+
+    turns = np.array([range(0, 20000000, 1000)]).reshape(20000,)
+
+    myinput = {'t0'    : t0_all,
+               'J1'    : J1_all,
+               'J2'    : J2_all,
+               'phi1'  : phi1_all,
+               'phi2'  : phi2_all,
+               'turns' : turns
+             }
+    
+    return myinput
 
 def normalize(X, part_on_CO, invW):
     X_norm = np.zeros_like(X)
@@ -17,18 +59,16 @@ def normalize(X, part_on_CO, invW):
     return X_norm
 
 def K(t, t0):
-    K = np.zeros_like(t0)
-    for i in range(t0.shape[0]):
-        if t < t0[i]:
-            K[i] = 1
-        else:
-            K[i] = 0
-    return K
+    return 1 - np.heaviside(t - t0, 0)
 
 def J(a, b):
     J = 0.5 * ( np.multiply(a, a)
               + np.multiply(b, b ))
     return J
+
+def phi(a, b):
+    phi = np.arctan(b/a)
+    return phi
 
 ##################
 # initialization #
@@ -77,53 +117,53 @@ def initialization(myfile):
     print('Getting invariants of motion J...')
     J1_init     =         J(X_init_norm[:, 0], X_init_norm[:, 1])
     J2_init     =         J(X_init_norm[:, 2], X_init_norm[:, 3])
-    J1_avg      = np.mean(J(X_norm[:, :, 0],   X_norm[:, :, 1]),  axis = 0)
-    J2_avg      = np.mean(J(X_norm[:, :, 2],   X_norm[:, :, 3]),  axis = 0)
+
+    # Get angle phi
+    phi1        =         phi(X_init_norm[:, 0], X_init_norm[:, 1])
+    phi2        =         phi(X_init_norm[:, 2], X_init_norm[:, 3])
 
     # Define t0
     T = 1          # time 1 turn takes (convert n_turns to t0)
     t0 = T * data['at_turn_last']
 
-    return t0.flatten(), J1_init, J1_avg, J2_init, J2_avg, epsg_x, epsg_y
+    return t0.flatten(), J1_init, J2_init, phi1, phi2, epsg_x, epsg_y
 
 ##################
 #    integral    #
 ##################
 
-def integral(t, t0, J1, J2, epsg_x, epsg_y):
-    R     = 4        # radius of hypersphere
-    V     = 1/2 * np.pi**2 * epsg_x * epsg_y * R**4 /16  # volume of hypersphere    
+# get Q
+def integral(t, t0, J1, J2, sigma1, sigma2):
+    V_1   = 1/2 * np.pi**2 * sigma1**4 /16
+    V_2   = 1/2 * np.pi**2 * sigma2**4 /16  # volume of hypersphere    
+    V     = V_2 - V_1
     M     = t0.shape[0]    # number of samples          ~ 50,000
     N     = 1        # total number of particles  ~ 10^11
     T     = 1
 
-    g_cst = N * 4 / np.pi**2 / (epsg_x * epsg_y)
-    g_fct = np.exp(-J1/(epsg_x)) * np.exp(-J2/(epsg_y))
-
-    g     = g_cst * g_fct
+    g_cst = N * 4 / np.pi**2 / (1 - np.exp(-sigma2**2/2) * (1 + sigma2**2/2))
+    g_fct = np.exp(-J1-J2)
 
     n     = t / T # convert time t to number of turns n
-    
-    Q = V/M * np.sum(np.multiply(K(t, t0), g))
-    
+
+    Q = V/M * g_cst  * np.sum(np.multiply(K(t, t0), g_fct))
+
     return Q
 
 # get Q^2
-def integral2(t, t0, J1, J2, epsg_x, epsg_y):
-    R     = 4        # radius of hypersphere
-    V     = 1/2 * np.pi**2 * R**4 /16  # volume of hypersphere
+def integral2(t, t0, J1, J2, sigma1, sigma2):
+    V_1   = 1/2 * np.pi**2 * sigma1**4 /16
+    V_2   = 1/2 * np.pi**2 * sigma2**4 /16  # volume of hypersphere    
+    V     = V_2 - V_1
     M     = t0.shape[0]    # number of samples          ~ 50,000
     N     = 1        # total number of particles  ~ 10^11
     T     = 1
 
-    g_cst = N * 4 / np.pi**2
-    g_fct = np.exp(-2 * J1/(epsg_x)) * np.exp(-2 * J2/(epsg_y))
-
-    g2     = g_cst**2 * g_fct
+    g_cst = N * 4 / np.pi**2 / (1 - np.exp(-sigma2**2/2) * (1 + sigma2**2/2))
+    g_fct = np.exp(-2 * (J1 + J2))
 
     n     = t / T # convert time t to number of turns n
 
-    Q2 = V**2/M * np.sum(np.multiply(K(t, t0), g2))
+    Q2 = V**2/M * g_cst**2 * np.sum(np.multiply(K(t, t0), g_fct))
 
     return Q2
-
