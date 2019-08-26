@@ -18,22 +18,8 @@ epsg_y   = optics['epsn_y'] / (optics['beta0'] * optics['gamma0'])
 # define sigma 1 & 2 #
 ######################
 
-sigma1 = 3.5
+sigma1 = 0
 sigma2 = 4
-
-######################
-#  lost particles ?  #
-######################
-
-
-# J1_lost = np.multiply((1 - K(max(t0_all) - 1, t0_all)), J1_all)[J1_lost != 0]
-# J2_lost = np.multiply((1 - K(max(t0_all) - 1, t0_all)), J2_all)[J2_lost != 0]
-# 
-# phi1_lost = np.multiply((1-K(max(t0_all)-1, t0_all)), phi1_all)[phi1_lost != 0]
-# phi2_lost = np.multiply((1-K(max(t0_all)-1, t0_all)), phi2_all)[phi2_lost != 0]
-# 
-# A1_lost = np.sqrt(2 * J1_lost / epsg_x)
-# A2_lost = np.sqrt(2 * J2_lost / epsg_y)
 
 ######################
 #   get integrals    #
@@ -43,8 +29,6 @@ sigma2 = 4
 f1 = ((1 - np.exp(-sigma1**2/2) * (1 + sigma1**2/2)) /
       (1 - np.exp(-sigma2**2/2) * (1 + sigma2**2/2)))
 # from sigma1 to sigma2
-
-
 # separate the particles in two regions 1 & 2
 mask1 = (J1_all / epsg_x + J2_all / epsg_y < sigma1**2 /2)
 mask2 = (J1_all / epsg_x + J2_all / epsg_y >= sigma1**2 /2)
@@ -64,6 +48,18 @@ for i,t in enumerate(turns):
         print(i/200, '%')
 
 errorQ = np.sqrt((Q2 - Q**2)/t0_all.shape[0])
+
+######################
+#  lost particles ?  #
+######################
+
+mask_lost    = (K(max(t0_all)-1, t0_all)  == 0)
+
+J1_lost,   J2_lost   = J1_all[mask_lost],   J2_all[mask_lost]
+phi1_lost, phi2_lost = phi1_all[mask_lost], phi2_all[mask_lost]
+
+A1_lost = np.sqrt(2 * J1_lost / epsg_x)
+A2_lost = np.sqrt(2 * J2_lost / epsg_y)
 
 
 #############
@@ -122,6 +118,7 @@ def lostparticle_A_plot():
         plt.plot(x, y, 'k')
     plt.title(r'Amplitudes for lost particles')
 
+# phi1 vs. phi2
 def lostparticle_phi_plot():
     plt.plot(phi1_lost, phi2_lost, 'r.', label = 'Lost particles')
     plt.legend(loc = 'upper right')

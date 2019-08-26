@@ -7,17 +7,29 @@ import myfilemanager_sixtracklib as mfm
 import matplotlib.pyplot as plt
 import pickle
 
-filelist = ['../data/losses_sixtracklib.3724052.0.h5',
-            '../data/losses_sixtracklib.3724052.1.h5',
-            '../data/losses_sixtracklib.3724052.2.h5',
-            '../data/losses_sixtracklib.3724052.3.h5',
-            '../data/losses_sixtracklib.3724052.4.h5',
-
-            '../data/losses_sixtracklib.3724053.0.h5',
-            '../data/losses_sixtracklib.3724053.1.h5',
-            '../data/losses_sixtracklib.3724053.2.h5',
-            '../data/losses_sixtracklib.3724053.3.h5',
-            '../data/losses_sixtracklib.3724053.4.h5']
+filelist = ['../data/losses_sixtracklib.3724052.0.h5',  
+            '../data/losses_sixtracklib.3724052.1.h5', 
+            '../data/losses_sixtracklib.3724052.2.h5', 
+            '../data/losses_sixtracklib.3724052.3.h5', 
+            '../data/losses_sixtracklib.3724052.4.h5', 
+            
+            '../data/losses_sixtracklib.3724053.0.h5', 
+            '../data/losses_sixtracklib.3724053.1.h5', 
+            '../data/losses_sixtracklib.3724053.2.h5', 
+            '../data/losses_sixtracklib.3724053.3.h5', 
+            '../data/losses_sixtracklib.3724053.4.h5', 
+            
+            '../data/losses_sixtracklib.3724054.0.h5', 
+            '../data/losses_sixtracklib.3724054.1.h5', 
+            '../data/losses_sixtracklib.3724054.2.h5', 
+            '../data/losses_sixtracklib.3724054.3.h5', 
+            '../data/losses_sixtracklib.3724054.4.h5', 
+            
+            '../data/losses_sixtracklib.3724055.0.h5', 
+            '../data/losses_sixtracklib.3724055.1.h5', 
+            '../data/losses_sixtracklib.3724055.2.h5', 
+            '../data/losses_sixtracklib.3724055.3.h5',
+            '../data/losses_sixtracklib.3724055.4.h5']
 
 
 ##################

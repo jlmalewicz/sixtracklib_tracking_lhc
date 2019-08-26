@@ -1,9 +1,17 @@
 import numpy as np
 import sys
-sys.path.append('..')
+
+sys.path.append('../..')
+
 import myfilemanager_sixtracklib as mfm
 import matplotlib.pyplot as plt
 import pickle
+
+
+
+############################################
+############## CONTOUR PLOT ################
+############################################
 
 
 def dynamic_aperture_contour(h5_filename):
@@ -12,7 +20,6 @@ def dynamic_aperture_contour(h5_filename):
     # input files #
     ###############
     
-    #mydict = mfm.h5_to_dict('dynap_sixtracklib_turns_1000000_delta_0.00009.h5')
     mydict = mfm.h5_to_dict(h5_filename)
     optics = pickle.load( open('optics_mad.pkl', 'rb') )
     co = pickle.load( open('particle_on_CO_mad_line.pkl', 'rb') )
@@ -22,6 +29,7 @@ def dynamic_aperture_contour(h5_filename):
     
     ########################
     # non-linear amplitude #
+    #    if uncoupled      #
     ########################
     
     
@@ -80,8 +88,6 @@ def dynamic_aperture_contour(h5_filename):
     # if the particle's last turn < nturns
     # then it has been lost
     
-    #i_max = mydict['xy_norm'].shape[0]
-    #j_max = mydict['xy_norm'].shape[1]
     k_max = mydict['at_turn_tbt_last'].shape[0]
     i_max = mydict['at_turn_tbt_last'].shape[1]
     j_max = mydict['at_turn_tbt_last'].shape[2]
