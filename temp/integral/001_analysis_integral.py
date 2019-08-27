@@ -115,6 +115,19 @@ def intensity_plot():
 
 # Lost particles
 # J1 vs. J2
+
+def lostparticles_heat_plot():
+    data = np.array([A1_lost, A2_lost]).T
+    x, y = data.T
+    k = kde.gaussian_kde(data.T)
+    nbins = 300
+    xi, yi = np.mgrid[x.min():x.max():nbins*1j, y.min():y.max():nbins*1j]
+    zi = k(np.vstack([xi.flatten(), yi.flatten()]))
+    plt.pcolormesh(xi, yi, zi.reshape(xi.shape), cmap= magma)
+    plt.xlabel(r'$A_1 [\sigma]$')
+    plt.ylabel(r'$A_2 [\sigma]$')
+    plt.title(r'Spatial distribution of Losses for $\delta_{init}$ = %s'%(mydict['init_delta']))
+
 def lostparticle_J_plot():
     plt.plot(J1_lost/epsg_x, J2_lost/epsg_y, 'r.', label = '%s lost particles'%(J1_lost.shape[0]))
     plt.legend(loc = 'upper right')
@@ -137,6 +150,8 @@ def lostparticle_A_plot():
         y = np.sqrt((i)**2 - x**2)
         plt.plot(x, y, 'k')
     plt.title(r'Amplitudes for lost particles')
+
+numpy.histogram2d(x, y, bins=10, range=None, normed=None, weights=None, density=None)
 
 # phi1 vs. phi2
 def lostparticle_phi_plot():
