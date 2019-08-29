@@ -128,7 +128,7 @@ def integral(t, t0, J1, J2, sigma1, sigma2):
     N     = 1        # total number of particles  ~ 10^11
     T     = 1
 
-    g_cst = N * 4 / np.pi**2 / (1 - np.exp(-sigma2**2/2) * (1 + sigma2**2/2))
+    g_cst = N * 4 / np.pi**2 / (1 - np.exp(-4**2/2) * (1 + 4**2/2))
     g_fct = np.exp(-J1-J2)
 
     n     = t / T # convert time t to number of turns n
