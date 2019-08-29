@@ -3,32 +3,35 @@ import matplotlib.pyplot as plt
 from integral import *
 
 # input
+# delta init = 0.000097
 
-filelist = ['../data/losses_sixtracklib.3724052.0.h5',
-            '../data/losses_sixtracklib.3724052.1.h5',
-            '../data/losses_sixtracklib.3724052.2.h5',
-            '../data/losses_sixtracklib.3724052.3.h5',
-            '../data/losses_sixtracklib.3724052.4.h5',
+#filelist = ['../data/losses_sixtracklib.3724052.0.h5',
+#            '../data/losses_sixtracklib.3724052.1.h5',
+#            '../data/losses_sixtracklib.3724052.2.h5',
+#            '../data/losses_sixtracklib.3724052.3.h5',
+#            '../data/losses_sixtracklib.3724052.4.h5',
+#
+#            '../data/losses_sixtracklib.3724053.0.h5',
+#            '../data/losses_sixtracklib.3724053.1.h5',
+#            '../data/losses_sixtracklib.3724053.2.h5',
+#            '../data/losses_sixtracklib.3724053.3.h5',
+#            '../data/losses_sixtracklib.3724053.4.h5',
+# 
+#            '../data/losses_sixtracklib.3724054.0.h5',
+#            '../data/losses_sixtracklib.3724054.1.h5',
+#            '../data/losses_sixtracklib.3724054.2.h5',
+#            '../data/losses_sixtracklib.3724054.3.h5',
+#            '../data/losses_sixtracklib.3724054.4.h5',
+# 
+#            '../data/losses_sixtracklib.3724055.0.h5',
+#            '../data/losses_sixtracklib.3724055.1.h5',
+#            '../data/losses_sixtracklib.3724055.2.h5',
+#            '../data/losses_sixtracklib.3724055.3.h5',
+#            '../data/losses_sixtracklib.3724055.4.h5']
 
-            '../data/losses_sixtracklib.3724053.0.h5',
-            '../data/losses_sixtracklib.3724053.1.h5',
-            '../data/losses_sixtracklib.3724053.2.h5',
-            '../data/losses_sixtracklib.3724053.3.h5',
-            '../data/losses_sixtracklib.3724053.4.h5',
- 
-            '../data/losses_sixtracklib.3724054.0.h5',
-            '../data/losses_sixtracklib.3724054.1.h5',
-            '../data/losses_sixtracklib.3724054.2.h5',
-            '../data/losses_sixtracklib.3724054.3.h5',
-            '../data/losses_sixtracklib.3724054.4.h5',
- 
-            '../data/losses_sixtracklib.3724055.0.h5',
-            '../data/losses_sixtracklib.3724055.1.h5',
-            '../data/losses_sixtracklib.3724055.2.h5',
-            '../data/losses_sixtracklib.3724055.3.h5',
-            '../data/losses_sixtracklib.3724055.4.h5']
-
-
+# delta init = 0.00027
+filelist = ['../data/losses_sixtracklib.3729580.0.h5',
+            '../data/losses_sixtracklib.3731612.1.h5']
 
 optics  = mfm.h5_to_dict(filelist[0], group = 'beam-optics')
 in_file = merge(filelist)

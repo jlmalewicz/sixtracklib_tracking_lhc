@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from integral import *
 
 
-input_file = 'losses_sixtracklib_200000_097.h5'
+input_file = 'losses_sixtracklib_20000_27.h5'
 
 ######################
 #   initialization   #
@@ -20,7 +20,7 @@ phi2_all = mydict['phi2']
 epsg_x   = optics['epsn_x'] / (optics['beta0'] * optics['gamma0'])
 epsg_y   = optics['epsn_y'] / (optics['beta0'] * optics['gamma0'])
 
-sigma1 = 3
+sigma1 = 2.5
 sigma2 = 4
 
 ######################
@@ -106,7 +106,7 @@ def intensity_plot():
     plt.xlabel('Number of turns')
     plt.ylabel('Intensity')
 
-   #  errorfill(turns, Q+f1, yerr=errorQ)
+    errorfill(turns, Q+f1, yerr=errorQ)
 
     plt.plot([], [], 'b.', label = '%s particles in integration'%(t0_2.shape[0]))
     plt.legend(loc = 'lower left')
@@ -117,13 +117,14 @@ def intensity_plot():
 # J1 vs. J2
 
 def lostparticles_heat_plot():
+    from scipy.stats import kde
     data = np.array([A1_lost, A2_lost]).T
     x, y = data.T
     k = kde.gaussian_kde(data.T)
     nbins = 300
     xi, yi = np.mgrid[x.min():x.max():nbins*1j, y.min():y.max():nbins*1j]
     zi = k(np.vstack([xi.flatten(), yi.flatten()]))
-    plt.pcolormesh(xi, yi, zi.reshape(xi.shape), cmap= magma)
+    plt.pcolormesh(xi, yi, zi.reshape(xi.shape), cmap= cm.magma)
     plt.xlabel(r'$A_1 [\sigma]$')
     plt.ylabel(r'$A_2 [\sigma]$')
     plt.title(r'Spatial distribution of Losses for $\delta_{init}$ = %s'%(mydict['init_delta']))
@@ -150,8 +151,6 @@ def lostparticle_A_plot():
         y = np.sqrt((i)**2 - x**2)
         plt.plot(x, y, 'k')
     plt.title(r'Amplitudes for lost particles')
-
-numpy.histogram2d(x, y, bins=10, range=None, normed=None, weights=None, density=None)
 
 # phi1 vs. phi2
 def lostparticle_phi_plot():
