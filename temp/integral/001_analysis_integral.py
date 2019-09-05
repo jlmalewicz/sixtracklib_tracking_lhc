@@ -70,10 +70,6 @@ A2_lost = np.sqrt(2 * J2_lost / epsg_y)
 
 analysis = {'sigma1'  :  sigma1,
             'sigma2'  :  sigma2,
-            'f1'      :  f1,
-            'Q'       :  Q,
-            'Q2'      :  Q2,
-            'errorQ'  :  errorQ,
             'n_part_in_integral' : t0_2.shape[0],
             'n_part_lost'        : J1_lost.shape[0]
             }
@@ -159,3 +155,13 @@ def lostparticle_phi_plot():
     plt.title(r'Transverse angles for lost particles')
     plt.xlabel(r'$\phi_1$')
     plt.ylabel(r'$\phi_2$')
+
+
+plt.figure(1)
+lostparticle_J_plot()
+
+plt.figure(2)
+lostparticle_A_plot()
+
+plt.figure(3)
+lostparticle_phi_plot()

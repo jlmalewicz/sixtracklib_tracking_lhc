@@ -115,9 +115,9 @@ def initialization(myfile):
 
     return t0.flatten(), J1_init, J2_init, phi1, phi2, epsg_x, epsg_y
 
-##################
-#    integral    #
-##################
+###########################
+#   intensity integral    #
+###########################
 
 # get Q
 def integral(t, t0, J1, J2, sigma1, sigma2):
@@ -154,3 +154,9 @@ def integral2(t, t0, J1, J2, sigma1, sigma2):
     Q2 = V**2/M * g_cst**2 * np.sum(np.multiply(K(t, t0), g_fct))
 
     return Q2
+
+#############################
+#    1 - losses integral    #
+#############################
+
+
